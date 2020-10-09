@@ -11,8 +11,10 @@ Start:
 npm i;
 cd web;
 npm i;
+npm i -g @angular/cli;
 ng build --prod && 
 cd .. && 
+tsc &&
 npm run serve;
 ```
 

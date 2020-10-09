@@ -1,3 +1,4 @@
+import { ChatResolver } from './resolvers/chatResolver';
 import { authChecker } from './auth';
 import { UserResolver } from './resolvers/userResolver';
 import type { Express } from 'express';
@@ -13,6 +14,7 @@ import { ExpressContext } from 'apollo-server-express/dist/ApolloServer';
 
 const cors_whitelist = ['http://localhost:3000', 'http://localhost:8100', 'http://localhost:4200']
 
+export type Ref<T> = T | ObjectId;
 
 export const cors_checker = (req, callback) =>
 {
@@ -81,7 +83,8 @@ export async function GQL(app: Express)
 	{
 		const schema = await buildSchema({
 			resolvers: [
-				UserResolver
+				UserResolver,
+				ChatResolver
 			],
 			validate: false,
 			globalMiddlewares: [TypegooseMiddleware],

@@ -1,0 +1,10 @@
+query chats{
+	chats{
+		text
+		author {
+			_id
+			name
+			color		
+		}
+	}
+}

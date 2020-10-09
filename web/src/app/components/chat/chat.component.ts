@@ -27,7 +27,7 @@ export class ChatComponent implements OnInit
 
   constructor(private authS: AuthService) { }
 
-  ngOnInit(): void
+  async ngOnInit(): Promise<void>
   {
   }
 

@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb';
 import { User } from './../../../schema/user';
 import { getModelForClass } from '@typegoose/typegoose';
 import { Arg, Int, Mutation, Query, Resolver, Ctx, Authorized, Root, FieldResolver, Field, InputType } from "type-graphql";
-import { hash } from '../../../utility/encrypt';
 import { auth, deauth, getAuthUser } from '../auth';
 import { NField } from '../../../schema/baseClass';
 
@@ -14,14 +13,14 @@ class userInput {
     @NField() name?: string
     @NField() color?: string
     @NField(type => [ObjectId]) friends?: ObjectId[];
-}
+}  
 
 
 @Resolver(of => User)
 export class UserResolver
 {
     @Query(_returns => User, { nullable: true })
-    async user(@Arg('_id') _id: string)
+    async user(@Arg('_id') _id: ObjectId)
     {
         return await UserModel.findById(_id);
     }
@@ -31,21 +30,6 @@ export class UserResolver
     async users()
     {
         return await UserModel.find();
-    }
-
-
-    @Mutation(() => User)
-    async userCreate()
-    {
-        const user = new UserModel();
-        await user.save();
-        return user;
-    }
-
-    @Query(_ => Boolean)
-    emitContext(@Ctx() context)
-    {
-        return true;
     }
 
     @Query(_ => User)
@@ -70,12 +54,6 @@ export class UserResolver
         return await deauth(context.req, context.res);
     }
 
-    @FieldResolver(type => [User])
-    async friends(@Root() root: User): Promise<User[]>
-    {
-        return UserModel.find({_id:{$in:root.friends}});
-    }
-
     @Authorized()
     @Mutation(type => User)
     async userUpdate(
@@ -94,4 +72,9 @@ export class UserResolver
         return user;
     }
 
+    @FieldResolver(type => [User])
+    async friends(@Root() root: User): Promise<User[]>
+    {
+        return UserModel.find({_id:{$in:root.friends}});
+    }
 }
