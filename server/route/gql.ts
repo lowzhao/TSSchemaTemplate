@@ -11,18 +11,21 @@ import { getClassForDocument } from '@typegoose/typegoose';
 import { GraphQLScalarType, Kind } from 'graphql';
 import { ExpressContext } from 'apollo-server-express/dist/ApolloServer';
 
+const cors_whitelist = ['http://localhost:3000', 'http://localhost:8100', 'http://localhost:4200']
 
-type ContextType = {
-	req: Express.Request,
-}
 
-export async function contextBuilder({ req, res, connection }: ExpressContext): Promise<ContextType>
+export const cors_checker = (req, callback) =>
 {
-	return {
-		req,
+	var corsOptions;
+	if (cors_whitelist.indexOf(req.header('Origin')) !== -1 || req.header('Origin') === undefined)
+	{
+		corsOptions = { origin: true, credentials: true };
+	} else
+	{
+		corsOptions = { origin: false };
 	}
+	callback(null, corsOptions);
 }
-
 
 export const ObjectIdScalar = new GraphQLScalarType({
 	name: "ObjectId",
@@ -54,7 +57,7 @@ function convertDocument(doc: Document)
 	return convertedDocument;
 }
 
-const TypegooseMiddleware: MiddlewareFn = async (_, next) => 
+const TypegooseMiddleware: MiddlewareFn = async (_, next) =>
 {
 	const result = await next();
 
@@ -76,12 +79,10 @@ export async function GQL(app: Express)
 {
 	async function GQL_buildSchema(): Promise<ApolloServer>
 	{
-
 		const schema = await buildSchema({
 			resolvers: [
 				UserResolver
 			],
-			emitSchemaFile: true,
 			validate: false,
 			globalMiddlewares: [TypegooseMiddleware],
 			// use ObjectId scalar mapping
@@ -91,12 +92,12 @@ export async function GQL(app: Express)
 
 		const server = new ApolloServer({
 			schema,
-			context: contextBuilder,
+			context: ({req, res}) => ({req, res}), 
 			introspection: true,
 			playground: true,
 		});
 		return server;
 	}
 
-	(await GQL_buildSchema()).applyMiddleware({ app: app });
+	(await GQL_buildSchema()).applyMiddleware({ app: app, cors: cors_checker });
 }

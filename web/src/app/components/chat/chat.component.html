@@ -1,0 +1,16 @@
+<div class='chatBase'>
+  <div class="chat">
+    <div *ngFor="let chat of chats">
+      <p><span [style.color]="chat.author.color">•</span>&nbsp;{{ chat.author.name }}</p>
+      <pre>{{ chat.text }}</pre>
+    </div>
+  </div>
+  <hr />
+  <textarea
+    autofocus=""
+    spellcheck="false"
+    #chatInputEl
+    (keyup.enter)="addChat(chatInputEl)"
+    placeholder="Type to chat "
+  ></textarea>
+</div>

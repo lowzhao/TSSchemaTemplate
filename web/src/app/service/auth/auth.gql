@@ -1,0 +1,24 @@
+query auth($name: String!, $pass: String!){
+  auth(name:$name, password:$pass){
+    ...UserFrag
+  }
+}
+
+query signOut{
+	signOut
+}
+
+query checkLogin{
+	checkLogin {
+		...UserFrag
+	}
+}
+
+fragment UserFrag on User {
+	_id
+	name
+	friends {
+		_id
+	}
+	color
+}

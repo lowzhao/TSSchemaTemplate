@@ -1,18 +1,7 @@
 <div class="app_root">
-  <div class="chat">
-    <div *ngFor="let chat of chats">
-      <p>{{ chat.author }}</p>
-      <pre>{{ chat.text }}</pre>
-    </div>
-  </div>
-  <p>Chat as: <input type="text" /> Password: <input type='password'/><input type="button" value="Sign in" (click)='login()'></p>
-  <hr />
-  <textarea
-    autofocus=""
-    spellcheck="false"
-    #chatInputEl
-    (keyup.enter)="addChat(chatInputEl)"
-  ></textarea>
+  <app-login></app-login>
+  <app-chat></app-chat>
+  
 </div>
 
 <!-- <script src="../assets/browser-polyfill.min.js"></script> -->

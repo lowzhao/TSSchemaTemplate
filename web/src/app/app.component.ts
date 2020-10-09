@@ -1,4 +1,4 @@
-import { AuthService } from './auth.service';
+import { AuthService } from './service/auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -14,24 +14,18 @@ export class AppComponent
     { author: 'Person 2', text: 'test2' },
   ]
 
-  loggedIn: boolean = false;
 
-  constructor(private auth: AuthService){}
+  constructor(private authS: AuthService){}
  
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.loggedIn = !!this.auth.checkLogin();
   }
 
   async addChat(chatInputEl: HTMLTextAreaElement): Promise<void>
   {
-    console.log(chatInputEl.value)
-    this.chats.push({ author: 'Person 3', text: chatInputEl.value });
+    this.chats.push({ author: this.authS.user.name, text: chatInputEl.value });
     chatInputEl.value = '';
   }
 
-  async login(): Promise<void>{
-    this.auth.login();
-  }
 }

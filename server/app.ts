@@ -1,6 +1,10 @@
 import route from './route/route';
 import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import { GQL, cors_checker } from './route/gql';
 
 
 async function connect_database(
@@ -25,21 +29,26 @@ async function start_server() {
 
     const app = express();
 
-    app.use("/", route);
+    app.use(
+        cors(cors_checker)
+    )
+    .use(
+        bodyParser.urlencoded({
+            limit: '50mb',
+            extended: true
+        })
+    ) // expand url encoded limit
+    .use(
+        bodyParser.json({
+            limit: '50mb'
+        })
+	)
+	
+	app.use(cookieParser());
 
-    // endpoint
-	app.use(
-		'/gql', (req, res, next) =>
-		{
-			const query = req.query.query || req.body.query || '';
-			if (query.length > 2000)
-			{
-				throw new Error('Query too large');
-			}
-			next();
-		}
-	);  // prevent malicious giant query
-	// await GQL(app);  // GraphQL main at /graphql
+	await GQL(app);  // GraphQL main at /graphql
+
+	app.use('/', route);  // UI
 
     app.listen(3000, () => {
         console.log('Server created at: ' + 3000)

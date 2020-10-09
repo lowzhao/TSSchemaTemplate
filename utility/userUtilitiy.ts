@@ -1,10 +1,10 @@
 import type { User } from './../schema/user';
 
 export default function maleProbability(user: Partial<User>): number{
-	if (!user.age) {
+	if (!user) {
 		return 0;
 	}
-	if (user.age > 20)
+	if (user > 20)
 	{
 		return 1
 	} else

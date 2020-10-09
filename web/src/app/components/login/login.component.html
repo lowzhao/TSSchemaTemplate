@@ -1,0 +1,22 @@
+<div *ngIf="auth.user; else loginPage">
+  <div>
+    Welcome&nbsp;<button [style.color]="auth.user.color" mat-button [matMenuTriggerFor]="menu">•</button>&nbsp;{{ auth.user.name }} &nbsp;<button (click)="logout()">
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let color of colors" (click)='selectColor(color)' [style.color]="color">•</button>
+      </mat-menu>
+      sign out
+    </button>
+  </div>
+  <div><p>{{ currentDate | date }} {{ currentDate | date: "shortTime" }}</p></div>
+</div>
+<ng-template #loginPage>
+  <div>
+    Chat as: <input #nameInput type="text" /> Password:
+    <input #passInput type="password" />
+    <input
+      type="button"
+      value="Sign in"
+      (click)="login(nameInput, passInput)"
+    />
+  </div>
+</ng-template>

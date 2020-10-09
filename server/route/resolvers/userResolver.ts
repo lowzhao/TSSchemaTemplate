@@ -1,9 +1,21 @@
+import { ObjectId } from 'mongodb';
 import { User } from './../../../schema/user';
 import { getModelForClass } from '@typegoose/typegoose';
-import { Arg, Int, Mutation, Query, Resolver, Ctx, Authorized, Root, FieldResolver } from "type-graphql";
+import { Arg, Int, Mutation, Query, Resolver, Ctx, Authorized, Root, FieldResolver, Field, InputType } from "type-graphql";
+import { hash } from '../../../utility/encrypt';
+import { auth, deauth, getAuthUser } from '../auth';
+import { NField } from '../../../schema/baseClass';
 
 
 export const UserModel = getModelForClass(User);
+
+@InputType()
+class userInput {
+    @NField() name?: string
+    @NField() color?: string
+    @NField(type => [ObjectId]) friends?: ObjectId[];
+}
+
 
 @Resolver(of => User)
 export class UserResolver
@@ -21,7 +33,7 @@ export class UserResolver
         return await UserModel.find();
     }
 
-    
+
     @Mutation(() => User)
     async userCreate()
     {
@@ -30,30 +42,55 @@ export class UserResolver
         return user;
     }
 
-    @Authorized()
-    @Mutation(() => User)
-    async userUpdate(
-        @Arg('_id', { nullable: false }) _id: string,
-        @Arg('user', type => User) userFields: User,
-        @Ctx() context: any,
-    )
+    @Query(_ => Boolean)
+    emitContext(@Ctx() context)
     {
-        const user = await UserModel.findById(_id);
+        return true;
+    }
 
-		if (!user){
-			return null;
-		}
+    @Query(_ => User)
+    async auth(
+        @Arg('name') name: string,
+        @Arg('password') password: string,
+        @Ctx() context: any
+    ): Promise<User>
+    {
+        return auth(name, password, context.req, context.res);
+    }
 
-        const currUser = context.getUser()
+    @Authorized()
+    @Query(_ => User)
+    async checkLogin(@Ctx() context: any) {
+        return getAuthUser(context.req);
+    }
+
+    @Authorized()
+    @Query(_ => Boolean)
+    async signOut(@Ctx() context: any): Promise<Boolean> {
+        return await deauth(context.req, context.res);
+    }
+
+    @FieldResolver(type => [User])
+    async friends(@Root() root: User): Promise<User[]>
+    {
+        return UserModel.find({_id:{$in:root.friends}});
+    }
+
+    @Authorized()
+    @Mutation(type => User)
+    async userUpdate(
+        @Arg('userInput') userInput: userInput,
+        @Ctx() context
+    ): Promise<User> {
+
+        const user = (await getAuthUser(context.req))!;
         
-
-        for (let key in userFields) {
-			if (currUser._id == user._id) {
-				user[key] = userFields[key];
-			}
+        for (let userKey in userInput) {
+            user[userKey] = userInput[userKey];
         }
-        
+
         await user.save();
+
         return user;
     }
 

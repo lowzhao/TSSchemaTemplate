@@ -1,0 +1,5 @@
+mutation updateColor($color: String!){
+	userUpdate(userInput: {color: $color}){
+		_id
+	}
+}

@@ -9,54 +9,12 @@
 	> * {
 		max-width: 1000px;
 		width: calc(100% - 5rem);
-		margin: 1rem auto;
+		margin: 0.5rem auto;
 	}
-	* {
-		font-size: 18px;
-		font-family: 'Fira Code';
-		letter-spacing: 0.5px;
-		line-height: 1.4em;
-		color: white;
-	}
-	.chat {
-		height: calc(80vh - 6rem);
-		overflow-y: scroll;
-		div{
-			margin-bottom: 20px;
-			p {
-				text-decoration: underline;
-			}
-			pre {
-				color: white;
-				word-wrap: break-word;
-				white-space: pre-wrap;       /* css-3 */
-			}
-		}
+	app-chat{
+		height: 100%;
 	}
 
-	hr{
-		max-width: 1000px;
-		color: white;
-		margin-top:0;
-
-	}
-
-	textarea, input{
-		background: inherit;
-		border: none;
-		outline: none;
-	}
-	textarea{
-		height: calc(20vh - 6rem);
-		overflow-y: auto;
-		resize: none;
-	}
-	input {
-		text-decoration: underline;
-		&:hover{
-			transform: scale(1.1);
-		}
-	}
 }
 
 // @font-face {

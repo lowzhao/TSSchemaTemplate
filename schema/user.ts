@@ -1,23 +1,17 @@
 import { prop } from '@typegoose/typegoose';
 import { Field, ObjectType } from 'type-graphql';
-// import { BaseClass, NField } from './baseClass';
+import { BaseClass } from './baseClass';
 
-
-// function ObjectAndType(){
-//     @ObjectType()
-//     class User;
-//     @InputType()
-//     class User;
-// }
-
-// @InputType("UserInput")
 @ObjectType()
-export class User 
-// extends BaseClass
+export class User extends BaseClass
 {
-	@Field() @prop() name: string;
-	@Field() @prop() age: number;
+	@Field() @prop({ unique: true }) name: string;
+	@Field() @prop() color: string;
+	@Field(_ => [User]) @prop({ ref: () => User }) friends: User[];
 	@prop() hashedPassword: string;
-	@prop() salt: string;
-
+	@prop() session: string;
+	constructor(aa){
+		super();
+		this.name = aa;
+	}
 }

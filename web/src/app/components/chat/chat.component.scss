@@ -1,0 +1,48 @@
+.chatBase {
+	height: 100%;
+}
+
+.chat, hr, textarea{
+	max-width: 1000px;
+	width: 100%;
+	margin: 0 auto;
+}
+.chat {
+	height: calc(80% - 2rem);
+	overflow-y: scroll;
+	div{
+		margin-bottom: 20px;
+		p {
+			text-decoration: underline;
+		}
+		pre {
+			color: white;
+			word-wrap: break-word;
+			white-space: pre-wrap;       /* css-3 */
+		}
+	}
+}
+
+hr{
+	max-width: 1000px;
+	color: white;
+	margin: 1rem 0;
+
+}
+
+textarea, input{
+	background: inherit;
+	border: none;
+	outline: none;
+}
+textarea{
+	height: calc(20% - 2rem);
+	overflow-y: auto;
+	resize: none;
+}
+input {
+	text-decoration: underline;
+	&:hover{
+		transform: scale(1.1);
+	}
+}
