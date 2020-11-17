@@ -9,30 +9,29 @@ import { NField } from '../../../schema/baseClass';
 export const UserModel = getModelForClass(User);
 
 @InputType()
-class userInput {
+class UserInput
+{
     @NField() name?: string
     @NField() color?: string
     @NField(type => [ObjectId]) friends?: ObjectId[];
-}  
-
+}
 
 @Resolver(of => User)
 export class UserResolver
 {
     @Query(_returns => User, { nullable: true })
-    async user(@Arg('_id') _id: ObjectId)
+    user(@Arg('_id') _id: ObjectId)
     {
-        return await UserModel.findById(_id);
+        return UserModel.findById(_id);
     }
 
-    // @Authorized(['ADMIN', 'MODERATOR'])
     @Query(() => [User])
-    async users()
+    users()
     {
-        return await UserModel.find();
+        return UserModel.find();
     }
 
-    @Query(_ => User)
+    @Mutation(_ => User)
     async auth(
         @Arg('name') name: string,
         @Arg('password') password: string,
@@ -44,27 +43,29 @@ export class UserResolver
 
     @Authorized()
     @Query(_ => User)
-    async checkLogin(@Ctx() context: any) {
+    async checkLogin(@Ctx() context: any)
+    {
         return getAuthUser(context.req);
     }
 
     @Authorized()
     @Query(_ => Boolean)
-    async signOut(@Ctx() context: any): Promise<Boolean> {
+    async signOut(@Ctx() context: any): Promise<Boolean>
+    {
         return await deauth(context.req, context.res);
     }
 
     @Authorized()
     @Mutation(type => User)
     async userUpdate(
-        @Arg('userInput') userInput: userInput,
+        @Arg('userInput') userInput: UserInput,
         @Ctx() context
-    ): Promise<User> {
-
+    ): Promise<User>
+    {
         const user = (await getAuthUser(context.req))!;
-        
-        for (let userKey in userInput) {
-            user[userKey] = userInput[userKey];
+
+        if (userInput.color){
+            user.color = userInput.color
         }
 
         await user.save();
@@ -75,6 +76,6 @@ export class UserResolver
     @FieldResolver(type => [User])
     async friends(@Root() root: User): Promise<User[]>
     {
-        return UserModel.find({_id:{$in:root.friends}});
+        return UserModel.find({ _id: { $in: root.friends } });
     }
 }

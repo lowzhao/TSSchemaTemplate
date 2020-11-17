@@ -1,3 +1,4 @@
+import { replaceEmoji } from './../../../utility/chatUtil';
 import { User } from './../../../schema/user';
 import { UserResolver } from './userResolver';
 import { Chat } from './../../../schema/chat';
@@ -36,7 +37,7 @@ export class ChatResolver
 	)
 	{
 		const chat = new ChatModel();
-		chat.text = text
+		chat.text = replaceEmoji(text);
 		chat.author = (await getAuthUser(context.req))!;
 		await chat.save();
 		return chat;

@@ -8,3 +8,14 @@ query chats{
 		}
 	}
 }
+
+mutation createChat($text: String!) {
+	chatCreate(text: $text) {
+		text
+		author {
+			_id
+			name
+			color		
+		}
+	}
+}

@@ -8,11 +8,7 @@ export class User extends BaseClass
 {
 	@Field() @prop({ unique: true }) name: string;
 	@Field() @prop() color: string;
-	@Field(_ => [User]) @prop({ ref: () => User }) friends: Ref<User>[];
+	@Field(_ => [User]) @prop({ ref: () => User }) friends: User[];
 	@prop() hashedPassword: string;
 	@prop() session: string;
-	constructor(aa){
-		super();
-		this.name = aa;
-	}
 }

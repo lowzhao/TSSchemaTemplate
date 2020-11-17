@@ -11,23 +11,14 @@ async function connect_database(
 	conn_str: string,
     conn_db: string
 ){
-    // await mongoose.connect(
-	// 	`mongodb+srv://${conn_str}/${conn_db}?retryWrites=true&w=majority`, {
-	// 	ssl: true,
-	// 	authSource: 'admin',
-	// 	useNewUrlParser: true,
-	// 	useUnifiedTopology: true,
-	// 	useCreateIndex: true,
-	// 	useFindAndModify: false,
-    // });
     await mongoose.connect(
-		`mongodb://localhost:27017/${conn_db}?retryWrites=true&w=majority`, {
-		// ssl: true,
+		`mongodb+srv://${conn_str}/${conn_db}?retryWrites=true&w=majority`, {
+		ssl: true,
 		authSource: 'admin',
-		// useNewUrlParser: true,
-		// useUnifiedTopology: true,
-		// useCreateIndex: true,
-		// useFindAndModify: false,
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useCreateIndex: true,
+		useFindAndModify: false,
     });
     console.log(`Database, ${conn_db} is connected`);
 }

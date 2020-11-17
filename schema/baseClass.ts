@@ -19,7 +19,6 @@ import { Field, ID, ObjectType } from 'type-graphql';
 })
 export abstract class BaseClass
 {
-
     static userEditableFields: string[] = [];
 
     @Field() @prop({ immutable: true, default: new Date() }) createdAt: Date;
@@ -29,7 +28,6 @@ export abstract class BaseClass
     @NField() @prop({ default: null }) deletedAt: Date;
     
 	@Field(type => ID) readonly _id: ObjectId;
-	
 }
 
 
